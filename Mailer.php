@@ -78,7 +78,7 @@ class Mailer extends BaseMailer
         return $this->_ses;
     }
 
-    protected function sendMessage($message): array
+    protected function sendMessage($message)
     {
         if ( is_null($message->getFrom()) && isset($this->defaultFrom)) {
             if(!is_array($this->defaultFrom)){
