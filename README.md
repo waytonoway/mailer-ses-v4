@@ -1,6 +1,7 @@
 Amazon ses extension for Yii2
 =============================
-Extension for sending emails via amazon ses. Part of YaShop
+Extension for sending emails via amazon ses v4. (based on daniel-zahariev/php-aws-ses) 
+
 
 Installation
 ------------
@@ -10,13 +11,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist ofat/yii2-yashop-ses "*"
+php composer.phar require --prefer-dist waytonoway/mailer-ses-v4
 ```
 
 or add
 
 ```
-"ofat/yii2-yashop-ses": "*"
+"waytonoway/mailer-ses-v4": "1.0.0"
 ```
 
 to the require section of your `composer.json` file.
@@ -31,7 +32,7 @@ To use this extension, you should configure it in the application configuration 
 'components' => [
     ...
     'mail' => [
-        'class' => 'yashop\ses\Mailer',
+        'class' => 'waytonoway\ses\Mailer',
         'access_key' => 'Your access key',
         'secret_key' => 'Your secret key',
         'host' => 'email.us-east-1.amazonaws.com' // not required
@@ -62,25 +63,4 @@ Yii::$app->mail->compose('contact/html', ['contactForm' => $form])
     ->setHeader('List-id', '<1>')
     ->setHeader('List-Unsubscribe', Url::to(['user/unsubscribe'], true))
     ->send();
-```
-
-Increase the speed of sending emails:
-
-```php
-Yii::$app->mailer->getSES()->enableVerifyHost(false);
-Yii::$app->mailer->getSES()->enableVerifyPeer(false);
-Yii::$app->mailer->getSES()->enableKeepAlive();
-
-foreach ($emails as $email) {
-    Yii::$app->mail->compose('delivery/mail', [])
-        ->setFrom('from@domain.com')
-        ->setTo($email)
-        ->setSubject($subject)
-        ->setHeader('Precedence', 'bulk')
-        ->setHeader('List-id', '<1>')
-        ->setHeader('List-Unsubscribe', Url::to(['user/unsubscribe'], true))
-        ->send();
-}
-
-Yii::$app->mailer->getSES()->enableKeepAlive(false);
 ```

@@ -9,7 +9,7 @@
  * 'components' => [
  *     ...
  *     'mail' => [
- *         'class' => 'yashop\ses\Mailer',
+ *         'class' => 'waytonoway\ses\Mailer',
  *         'access_key' => 'Your access key',
  *         'secret_key' => 'Your secret key'
  *     ],
@@ -26,37 +26,35 @@
  *     ->setSubject($form->subject)
  *     ->send();
  * ~~~
- *
- * @author Vitaliy Ofat <ofatv22@gmail.com>
  */
 
-namespace yashop\ses;
+namespace waytonoway\ses;
 
-use yashop\ses\libs\SimpleEmailService;
 use Yii;
 use yii\mail\BaseMailer;
+use yii\mail\MessageInterface;
 
 class Mailer extends BaseMailer
 {
     /**
      * @var string message default class name.
      */
-    public $messageClass = 'yashop\ses\Message';
+    public $messageClass = 'waytonoway\ses\Message';
 
     /**
      * @var string Amazon ses api access key
      */
-    public $access_key;
+    public $accessKey;
 
     /**
      * @var string Amazon ses api secret key
      */
-    public $secret_key;
+    public $secretKey;
 
     /**
      * @var string A default from address to send email
      */
-    public $default_from;
+    public $defaultFrom;
 
     /**
      * @var string Amazon ses host
@@ -64,44 +62,33 @@ class Mailer extends BaseMailer
     public $host = 'email.us-east-1.amazonaws.com';
 
     /**
-     * @var \yashop\ses\libs\SimpleEmailService SimpleEmailService instance.
+     * @var \SimpleEmailService SimpleEmailService instance.
      */
     private $_ses;
 
     /**
-     * @return \yashop\ses\libs\SimpleEmailService SimpleEmailService instance.
+     * @return \SimpleEmailService SimpleEmailService instance.
      */
     public function getSES()
     {
         if (!is_object($this->_ses)) {
-            $this->_ses = new SimpleEmailService($this->access_key, $this->secret_key, $this->host);
+            $this->_ses = new \SimpleEmailService($this->accessKey, $this->secretKey, $this->host);
         }
 
         return $this->_ses;
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function sendMessage($message)
+    protected function sendMessage($message): array
     {
-        $address = $message->getTo();
-        if (is_array($address)) {
-            $address = implode(', ', array_keys($address));
-        }
-        Yii::info('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
-
-        if ( is_null($message->getFrom()) && isset($this->default_from)) {
-            if(!is_array($this->default_from)){
-                $this->default_from = array($this->default_from => $this->default_from);
+        if ( is_null($message->getFrom()) && isset($this->defaultFrom)) {
+            if(!is_array($this->defaultFrom)){
+                $this->defaultFrom = array($this->defaultFrom => $this->defaultFrom);
             }
-            $message->setFrom($this->default_from);
-        }
-        $res = $this->getSES()->sendEmail($message->getSesMessage());
+
+            $message->setFrom($this->defaultFrom);
+        };
 
         $message->setDate(time());
-
-        return count($res) > 0;
+        return $this->getSES()->sendEmail($message->getSesMessage());
     }
-
 }

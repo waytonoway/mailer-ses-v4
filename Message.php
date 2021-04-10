@@ -1,19 +1,12 @@
 <?php
-
-namespace yashop\ses;
+namespace waytonoway\ses;
 
 use yii\mail\BaseMessage;
-use yashop\ses\libs\SimpleEmailServiceMessage;
 
-/**
- * Message implements a message class based on Amazon Simple Email Service
- *
- * @author Vitaliy Ofat <ofatv22@gmail.com>
- */
 class Message extends BaseMessage
 {
     /**
-     * @var \yashop\ses\libs\SimpleEmailServiceMessage Simple Email Service message instance.
+     * @var \SimpleEmailServiceMessage Simple Email Service message instance.
      */
     private $_sesMessage;
 
@@ -67,38 +60,26 @@ class Message extends BaseMessage
      */
     private $time;
 
-    /**
-     * In Yii2 dev panel some bug and this method have to return information about result of sending
-     * @return \yashop\ses\Message Message class instance.
-     */
-    public function getSwiftMessage()
+
+    public function getSwiftMessage(): Message
     {
         return $this;
     }
 
-    /**
-     * @return \yashop\ses\libs\SimpleEmailServiceMessage Simple Email Service message instance.
-     */
-    public function getSesMessage()
+    public function getSesMessage(): \SimpleEmailServiceMessage
     {
         if (!is_object($this->_sesMessage)) {
-            $this->_sesMessage = new SimpleEmailServiceMessage();
+            $this->_sesMessage = new \SimpleEmailServiceMessage();
         }
 
         return $this->_sesMessage;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getCharset()
     {
         return $this->charset;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setCharset($charset)
     {
         $this->getSesMessage()->setMessageCharset($charset);
@@ -109,17 +90,11 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getFrom()
+    public function getFrom(): string
     {
         return $this->from;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setFrom($from, $name = null)
     {
         if (!isset($name)) {
@@ -136,17 +111,11 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getReplyTo()
+    public function getReplyTo(): string
     {
         return $this->replyTo;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setReplyTo($replyTo)
     {
         $this->getSesMessage()->addReplyTo($replyTo);
@@ -155,17 +124,11 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getTo()
     {
         return $this->to;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setTo($to)
     {
         $this->getSesMessage()->addTo($to);
@@ -174,17 +137,11 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getCc()
     {
         return $this->cc;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setCc($cc)
     {
         $this->getSesMessage()->addCC($cc);
@@ -193,17 +150,11 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getBcc()
     {
         return $this->bcc;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setBcc($bcc)
     {
         $this->getSesMessage()->addBCC($bcc);
@@ -212,17 +163,11 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getSubject()
     {
         return $this->subject;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setSubject($subject)
     {
         $this->getSesMessage()->setSubject($subject);
@@ -230,9 +175,6 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setTextBody($text)
     {
         $this->messageText = $text;
@@ -241,9 +183,6 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setHtmlBody($html)
     {
         $this->messageHtml = $html;
@@ -252,25 +191,16 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getBody()
     {
         return $this->messageText;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setBody($text, $html = null)
     {
         $this->getSesMessage()->setMessageFromString($text, $html);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attach($fileName, array $options = [])
     {
         $name = $fileName;
@@ -287,9 +217,6 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attachContent($content, array $options = [])
     {
         $name = 'file 1';
@@ -306,25 +233,16 @@ class Message extends BaseMessage
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function embed($fileName, array $options = [])
     {
         return $this->attach($fileName, $options);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function embedContent($content, array $options = [])
     {
         return $this->attachContent($content, $options);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function toString()
     {
         return $this->getSesMessage()->getRawMessage();
@@ -340,18 +258,5 @@ class Message extends BaseMessage
     public function getDate()
     {
         return $this->time;
-    }
-
-    public function getHeaders()
-    {
-        //todo: make headers for debug
-        return '';
-    }
-
-    public function setHeader($key, $value)
-    {
-        $this->getSesMessage()->addTextHeader($key, $value);
-
-        return $this;
     }
 }
