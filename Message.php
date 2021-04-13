@@ -90,7 +90,7 @@ class Message extends BaseMessage
         return $this;
     }
 
-    public function getFrom(): string
+    public function getFrom()
     {
         return $this->from;
     }
@@ -111,7 +111,7 @@ class Message extends BaseMessage
         return $this;
     }
 
-    public function getReplyTo(): string
+    public function getReplyTo()
     {
         return $this->replyTo;
     }
